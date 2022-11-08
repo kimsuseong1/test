@@ -1,0 +1,13 @@
+SSH
+
+window -> 설정 -> 앱 및 기능 -> 선택적 기능 -> ssh 검색 -> 클라이언트 다운
+
+linux -> systemctl status sshd
+
+cmd -> ssh rocky@192.168.111.100
+cd .ssh -> ssh-keygen -t rsa -b 4096
+
+내pc -> c ->  사용자 -> 4GL -> .SSH
+id_rsa.pub 복사
+
+linux -> cd .ssh -> vi authorized_keys -> 복사한거 붙여넣기 -> chmod 700

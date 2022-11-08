@@ -1,0 +1,30 @@
+RAID / LVM
+
+lsblk
+
+fdisk /dev/sdb
+
+n >>>>
+t > raid
+w
+
+mdadm --create /dev/md0 --level=0 -raid-devices=2 /dev/sdb1 /dev/sdc1
+mdadm --detail --scan
+
+mkfs.ext4 /dev/md0 / mkfs -t ext4 /dev/md0
+
+mount /dev/md0 /mount
+
+vi /etc/fstab
+
+/dev/md0	/mount	ext4	defaults	0	0
+
+pvcreate /dev/md0 < PV
+pvs / pvdisplay
+
+vgcreate VG /dev/md0
+
+lvcreate --size 1G --name lv VG
+lvcreate --extents 100%free --name lv vg
+
+mkfs.ext4 /dev/VG/lv

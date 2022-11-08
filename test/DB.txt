@@ -1,0 +1,16 @@
+DB
+
+dnf install mariadb-server
+
+systemctl --now enable mariadb
+
+firewall-cmd --add-port=3306/tcp (--add-service=mysql)
+
+create database db;
+
+show databases;
+
+grant all on db.* to admin@'%' identified by '1234';
+
+use mysql;
+select user,host from user;

@@ -1,0 +1,31 @@
+SMB
+
+dnf install samba
+
+mkdir /share
+chgrp rocky /share
+chmod 770 /share
+smbpasswd -a rocky
+
+vi /etc/samba/smb.conf
+
+7 = WORKGROUP
+
+     39 [share]
+     40         path = /share
+     41         wretable = yes
+     42         guest ok = no
+     43         create mode = 0777
+     44         derectory mode = 0777
+     45         valid users = @rocky
+
+systemctl start smb nmb
+systemctl enable smb nmb
+
+firewall-cmd --permanent --add-service=samba
+firewall-cmd --permanent --add-service=samba-client
+firewall-cmd --reload
+
+mount /dev/sdb? /share
+
+window -> 내pc -> 네트워크 드라이브 연결 -> \\ samba server ip\share

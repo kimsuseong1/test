@@ -1,0 +1,31 @@
+QUOTA
+
+fdisk /dev/sd?
+n
+p
+~~~~~
+p
+w
+
+mkfs.ext4 /dev/sd?
+mkdir /userhome
+
+vi /etc/fstab
+
+/dev/sd?	  /userhome    ext4    defaults,usrquota=aquota.user,jqufmt=vfsv0    0  0
+
+mount /dev/sd? /userhome
+
+useradd -d /userhome/kim kim
+passwd kim
+
+cd /userhome
+quotaoff -avu
+touch aquota.user
+chmod 600 aquota.*
+quotacheck - augmn
+quotaon -avu
+
+
+edquota -u kim
+ 용량 설정 

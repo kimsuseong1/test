@@ -1,0 +1,31 @@
+DNS
+
+dnf install bind bind-chroot
+
+firewall-cmd --permanent --add-service=dns (--add-port=53/tcp , 53/udp)
+firewall-cmd --reload
+
+vi /etc/named.conf
+
+11 = any
+12 = none
+19 = any
+
+zone "waplz.com" IN {
+	type master;
+	file "waplz.com.db";
+	allow-update { none; };
+};
+
+named-checkconf
+
+cd /var/named/
+
+$TTL 3H
+@	SOA	@	root.	( 2 2D 2H 2W 2H )
+@	IN	NS	@
+	IN	A	domainserver ip
+	IN	MX	10 mail.waplz.com.
+
+mail	IN	A	mailserver ip
+www	IN	A	web ip

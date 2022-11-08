@@ -1,0 +1,19 @@
+CRON
+
+vi /etc/crontab
+
+01(분)  4(시간) *  *  *  (*은 매일 실행 하겠다는 뜻) root run-parts /etc/cron.daliy
+
+cd /etc/cron.daily
+
+vi backup_db.sh
+
+DATE=$(date +%Y%m%d) 
+
+BACKUP_DIR=/backup/   
+mysqldump -u admin -padmin Waplz_DB > $BACKUP_DIR"Waplz_DB_Backup_"$DATE.sql
+ find $BACKUP_DIR*.sql -ctime +2 -exec rm -f {} \;
+
+chmod 755 backup.sh 
+
+sh backup.sh

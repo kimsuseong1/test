@@ -1,0 +1,75 @@
+dnf install postfix
+
+vi /etc/hostname
+mail.waplz.com
+
+vi /etc/sysconfig/network
+HOSTNAME=mail.waplz.com
+
+vi /etc/hosts
+mail.waplz.com
+
+vi /etc/postfix/main.cf
+postfix
+
+vi /etc/postfix/main.cf 수정하기
+
+94행     myhostname = mail.waplz.com      #mail.나의 도메인.com)
+102행   mydomain = waplz.com	 #나의도메인com
+117행   myorigin = $mydomain	 # =$나의도메인
+132행   inet_interfaces = all 	 	 # 모든도메인
+138행   inet_protocols = ipv4                   # 네트워크 ipv4, ipv6, all 선택
+
+183행   mydestination = $myhostnmae, localhost.$mydomain, localhost, $mydomain
+	# 메일 목적지 설정
+283행   mynetworks = 127.0.0.0/8,  211.100.2.0/24     # 루프백 이후 주소는 메일server ip대역맞게
+
+437행   home_mailbox = Maildir/		# 메일 유저 정보 저장될 디렉터리
+
+591행   smtpd_banner = $myhostname ESMTP 	# 매일 접속시 인사말 배너
+
+아래에 새로 추가 
+           disable_vrfy_command = yes 		# 서버지정 사용자 이름,사용자 유효 확인 요청 ,프로토콜 재시작
+           smtpd_helo_required = yes		# SMTP 클라이언트가 HELO(우편개시) ,EHLO(확장SMTP 프로토콜 사용가능하도록) 보내도록 요구 	
+           message_size_limit = 10240000		# 메일함 용량 지정
+
+SASL 인증 관련추가 ( 모두새로작성 )	
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_security_options = noanonymous
+smtpd_sasl_local_domain = $myhostname
+smtpd_recipient_restrictions = permit_mynetworks, permit_auth_destination, permit_sasl_authenticated, reject
+
+
+
+dnf install dovecot*
+vi /etc/dovecot/dovecot.conf
+
+30 = # X
+
+vi /etc/dovecot/conf.d/10-auth.conf
+
+10 = # X yes> no
+
+100 = + login
+
+vi /erc/dovecot/conf.d/10-ssl.conf
+
+8 = req > yes
+
+vi /etc/dovecot/conf.d/10-master.conf
+
+    106   # Postfix smtp-auth
+    107   unix_listener /var/spool/postfix/private/auth {
+    108     mode = 0666
+    109     user = postfix
+    110     group = postfix
+    111   }
+    112   
+
+systemctl --now enable postfix dovecot
+
+firewall-cmd --permanent --add-service={smtp,pop3,imap}
+
+firewall-cmd --reload

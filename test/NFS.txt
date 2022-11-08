@@ -1,0 +1,17 @@
+NFS
+
+dnf install -y nfs-utils
+
+mkdir /back
+
+vi /etc/exports
+
+/back 211.100.2.0/24(rw,sync)
+
+systemctl --now enable nfs-server
+
+firewall-cmd --permanent --add-service={nfs3,mountd,rpc-bind}
+
+showmount -e 192.168.111.100
+
+mount -t nfs 192.168.111.100:/back /back2

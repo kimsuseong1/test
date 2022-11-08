@@ -1,0 +1,26 @@
+WEB 
+
+apache wordpress
+
+dnf instsall httpd php php-mysqlnd mariadb-server
+
+systemctl --now enable httpd
+
+firewall-cmd --add-service=http
+firewall-cmd --add-service=https
+
+cd /var/www/html
+wget https://ko.wordpress.org/latest-ko_KR.tar.gz
+
+tar xfz latest-ko_KR.tar.gz
+
+ln -s wordpress/ wp
+
+chmod 707 wordpress/
+chown -R apache.apache wordpress/
+
+wp-config.php
+
+23 = db
+26 = user
+29 = pass
